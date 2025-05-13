@@ -1,4 +1,4 @@
-# Phase 1: Field Extraction from National Insurance Forms
+# Field Extraction from National Insurance Forms
 
 This component extracts information from ביטוח לאומי (National Insurance Institute) forms using Azure Document Intelligence for OCR and Azure OpenAI for structured data extraction.
 
