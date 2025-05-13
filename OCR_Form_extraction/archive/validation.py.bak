@@ -1,0 +1,190 @@
+from typing import Dict, Any, List, Tuple
+import re
+from datetime import datetime
+import numpy as np
+
+class ExtractionValidator:
+    def __init__(self):
+        self.field_patterns = {
+            'idNumber': r'^\d{9}$',  # ID israélien à 9 chiffres
+            'mobilePhone': r'^\d{10}$',  # Téléphone mobile israélien
+            'landlinePhone': r'^\d{9}$',  # Téléphone fixe israélien
+            'postalCode': r'^\d{5,7}$'  # Code postal israélien
+        }
+        
+        # Définition des zones attendues pour chaque champ dans le formulaire
+        self.expected_zones = {
+            'lastName': {'y_range': (0.2, 0.3), 'x_range': (0.6, 0.8)},
+            'firstName': {'y_range': (0.2, 0.3), 'x_range': (0.4, 0.6)},
+            'idNumber': {'y_range': (0.2, 0.3), 'x_range': (0.2, 0.4)},
+            # Ajouter d'autres champs selon le formulaire
+        }
+
+        self.min_confidence_threshold = 0.5
+        self.spatial_overlap_threshold = 0.3
+
+    def validate_format(self, field: str, value: str) -> bool:
+        """Valide le format d'un champ selon son pattern."""
+        if not value:
+            return True  # Les champs vides sont acceptés
+        
+        pattern = self.field_patterns.get(field)
+        if not pattern:
+            return True  # Pas de pattern défini pour ce champ
+            
+        return bool(re.match(pattern, value))
+
+    def validate_date(self, date_dict: Dict[str, str]) -> Tuple[bool, str]:
+        """Valide une date et retourne (validité, message d'erreur)."""
+        try:
+            if not all([date_dict.get('day'), date_dict.get('month'), date_dict.get('year')]):
+                return True, ""  # Date incomplète acceptée
+                
+            datetime(
+                int(date_dict['year']),
+                int(date_dict['month']),
+                int(date_dict['day'])
+            )
+            return True, ""
+        except ValueError:
+            return False, "Format de date invalide"
+
+    def validate_spatial_position(self, field: str, position: Dict[str, float], page_dims: Dict[str, float]) -> float:
+        """
+        Valide la position d'un champ dans le document et retourne un score de confiance.
+        
+        Args:
+            field: Nom du champ
+            position: Position du texte {x, y, width, height}
+            page_dims: Dimensions de la page {width, height}
+        
+        Returns:
+            float: Score de confiance entre 0 et 1
+        """
+        if field not in self.expected_zones:
+            return 1.0  # Pas de validation spatiale pour ce champ
+            
+        expected = self.expected_zones[field]
+        
+        # Normaliser les coordonnées
+        x_norm = position['x'] / page_dims['width']
+        y_norm = position['y'] / page_dims['height']
+        
+        # Vérifier si la position est dans la zone attendue
+        x_valid = expected['x_range'][0] <= x_norm <= expected['x_range'][1]
+        y_valid = expected['y_range'][0] <= y_norm <= expected['y_range'][1]
+        
+        if x_valid and y_valid:
+            return 1.0
+        elif x_valid or y_valid:
+            return 0.5
+        return 0.0
+
+    def validate_extraction(self, extraction_result: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Valide les résultats d'extraction en vérifiant la cohérence spatiale et les scores de confiance.
+        
+        Args:
+            extraction_result: Dictionnaire contenant les résultats d'extraction
+            
+        Returns:
+            Dict contenant les résultats de validation
+        """
+        validation_scores = []
+        spatial_validations = []
+        
+        # Valider les spans de texte
+        for span in extraction_result["text_spans"]:
+            # Vérifier le score de confiance
+            confidence_valid = span["confidence"] >= self.min_confidence_threshold
+            
+            # Vérifier la cohérence spatiale avec les autres éléments
+            spatial_score = self._validate_spatial_coherence(
+                span["bounding_box"],
+                extraction_result["text_spans"] + extraction_result.get("tables", [])
+            )
+            
+            validation_scores.append(span["confidence"])
+            spatial_validations.append(spatial_score)
+            
+        # Calculer les scores globaux
+        avg_confidence = np.mean(validation_scores) if validation_scores else 0.0
+        spatial_confidence = np.mean(spatial_validations) if spatial_validations else 0.0
+        
+        return {
+            "validated_spans": [
+                {
+                    "text": span["text"],
+                    "confidence_valid": span["confidence"] >= self.min_confidence_threshold,
+                    "spatial_score": self._validate_spatial_coherence(
+                        span["bounding_box"],
+                        extraction_result["text_spans"]
+                    )
+                }
+                for span in extraction_result["text_spans"]
+            ],
+            "global_confidence": (avg_confidence + spatial_confidence) / 2,
+            "confidence_metrics": {
+                "average_confidence": avg_confidence,
+                "spatial_confidence": spatial_confidence
+            }
+        }
+    
+    def _validate_spatial_coherence(self, bbox: List[float], all_elements: List[Dict[str, Any]]) -> float:
+        """
+        Valide la cohérence spatiale d'un élément par rapport aux autres.
+        
+        Args:
+            bbox: Boîte englobante de l'élément [x, y, width, height]
+            all_elements: Liste de tous les éléments à comparer
+            
+        Returns:
+            Score de cohérence spatiale entre 0 et 1
+        """
+        if not all_elements:
+            return 1.0
+            
+        overlaps = []
+        for element in all_elements:
+            if element["bounding_box"] == bbox:
+                continue
+                
+            overlap = self._calculate_overlap(bbox, element["bounding_box"])
+            overlaps.append(overlap)
+            
+        # Retourner un score basé sur le chevauchement moyen
+        avg_overlap = np.mean(overlaps) if overlaps else 0.0
+        return 1.0 - min(avg_overlap / self.spatial_overlap_threshold, 1.0)
+    
+    def _calculate_overlap(self, bbox1: List[float], bbox2: List[float]) -> float:
+        """
+        Calcule le chevauchement entre deux boîtes englobantes.
+        
+        Args:
+            bbox1: Première boîte englobante [x, y, width, height]
+            bbox2: Deuxième boîte englobante [x, y, width, height]
+            
+        Returns:
+            Ratio de chevauchement entre 0 et 1
+        """
+        x1, y1, w1, h1 = bbox1
+        x2, y2, w2, h2 = bbox2
+        
+        # Calculer l'intersection
+        x_left = max(x1, x2)
+        y_top = max(y1, y2)
+        x_right = min(x1 + w1, x2 + w2)
+        y_bottom = min(y1 + h1, y2 + h2)
+        
+        if x_right < x_left or y_bottom < y_top:
+            return 0.0
+            
+        intersection_area = (x_right - x_left) * (y_bottom - y_top)
+        
+        # Calculer l'union
+        bbox1_area = w1 * h1
+        bbox2_area = w2 * h2
+        union_area = bbox1_area + bbox2_area - intersection_area
+        
+        # Retourner le ratio IoU (Intersection over Union)
+        return intersection_area / union_area if union_area > 0 else 0.0 

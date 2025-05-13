@@ -1,0 +1,104 @@
+{
+  "id": "extraction_20250418_193053_ac1e413a",
+  "timestamp": "2025-04-18T19:30:53.580669",
+  "original_extraction": {
+    "lastName": "הלוי",
+    "firstName": "שלמה",
+    "idNumber": "022456120",
+    "gender": "זכר",
+    "dateOfBirth": {
+      "day": "14",
+      "month": "10",
+      "year": "1990"
+    },
+    "address": {
+      "street": "חיים ויצמן",
+      "houseNumber": "6",
+      "entrance": "34",
+      "apartment": "",
+      "city": "יוקנעם",
+      "postalCode": "4454124",
+      "poBox": ""
+    },
+    "landlinePhone": "097656054",
+    "mobilePhone": "6554412742",
+    "jobType": "עצמאי",
+    "dateOfInjury": {
+      "day": "12",
+      "month": "08",
+      "year": "2005"
+    },
+    "timeOfInjury": "12:00",
+    "accidentLocation": "במפעל",
+    "accidentAddress": "האופים 17 בני ברק",
+    "accidentDescription": "במהלך העבודה נשרף ממגש לוהט.",
+    "injuredBodyPart": "הפנים במיוחד הלחי הימנית",
+    "signature": "חתימהX",
+    "formFillingDate": {
+      "day": "14",
+      "month": "09",
+      "year": "2006"
+    },
+    "formReceiptDateAtClinic": {
+      "day": "03",
+      "month": "07",
+      "year": "2001"
+    },
+    "medicalInstitutionFields": {
+      "healthFundMember": "",
+      "natureOfAccident": "תאונה בדרך ללא רכב",
+      "medicalDiagnoses": "בל/ 283 (05.2010)"
+    }
+  },
+  "final_extraction": {
+    "lastName": "הלוי",
+    "firstName": "שלמה",
+    "idNumber": "022456120",
+    "gender": "זכר",
+    "dateOfBirth": {
+      "day": "14",
+      "month": "10",
+      "year": "1990"
+    },
+    "address": {
+      "street": "חיים ויצמן",
+      "houseNumber": "6",
+      "entrance": "34",
+      "apartment": "",
+      "city": "יוקנעם",
+      "postalCode": "4454124",
+      "poBox": ""
+    },
+    "landlinePhone": "097656055",
+    "mobilePhone": "6554412742",
+    "jobType": "עצמאי",
+    "dateOfInjury": {
+      "day": "12",
+      "month": "08",
+      "year": "2005"
+    },
+    "timeOfInjury": "12:00",
+    "accidentLocation": "במפעל",
+    "accidentAddress": "האופים 17 בני ברק",
+    "accidentDescription": "במהלך העבודה נשרף ממגש לוהט.",
+    "injuredBodyPart": "הפנים במיוחד הלחי הימנית",
+    "signature": "חתימהX",
+    "formFillingDate": {
+      "day": "14",
+      "month": "09",
+      "year": "2006"
+    },
+    "formReceiptDateAtClinic": {
+      "day": "03",
+      "month": "07",
+      "year": "2001"
+    },
+    "medicalInstitutionFields": {
+      "healthFundMember": "",
+      "natureOfAccident": "תאונה בדרך ללא רכב",
+      "medicalDiagnoses": "בל/ 283 (05.2010)"
+    }
+  },
+  "has_been_corrected": true,
+  "last_update": "2025-04-18T19:30:53.599962"
+}

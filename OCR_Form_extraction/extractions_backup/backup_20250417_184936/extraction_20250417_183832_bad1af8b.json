@@ -1,0 +1,103 @@
+{
+  "id": "extraction_20250417_183832_bad1af8b",
+  "timestamp": "2025-04-17T18:38:32.562865",
+  "original_extraction": {
+    "lastName": "טננהוים",
+    "firstName": "יהודה",
+    "idNumber": "02021995",
+    "gender": "זכר",
+    "dateOfBirth": {
+      "day": "02",
+      "month": "02",
+      "year": "1995"
+    },
+    "address": {
+      "street": "הרמבם",
+      "houseNumber": "16",
+      "entrance": "1",
+      "apartment": "12",
+      "city": "אבן יהודה",
+      "postalCode": "312422",
+      "poBox": ""
+    },
+    "landlinePhone": "",
+    "mobilePhone": "6502474947",
+    "jobType": "מלצרות",
+    "dateOfInjury": {
+      "day": "16",
+      "month": "04",
+      "year": "2022"
+    },
+    "timeOfInjury": "19:00",
+    "accidentLocation": "תאונה בדרך ללא רכב",
+    "accidentAddress": "הורדים 8, תל אביב",
+    "accidentDescription": "החלקתי בגלל שהרצפה הייתה רטובה ולא היה שום שלט שמזהיר.",
+    "injuredBodyPart": "יד שמאל",
+    "signature": "חתימהX",
+    "formFillingDate": {
+      "day": "25",
+      "month": "01",
+      "year": "2023"
+    },
+    "formReceiptDateAtClinic": {
+      "day": "02",
+      "month": "02",
+      "year": "1999"
+    },
+    "medicalInstitutionFields": {
+      "healthFundMember": "",
+      "natureOfAccident": "",
+      "medicalDiagnoses": ""
+    }
+  },
+  "final_extraction": {
+    "lastName": "טננהוים",
+    "firstName": "יהודה",
+    "idNumber": "02021995",
+    "gender": "זכר",
+    "dateOfBirth": {
+      "day": "02",
+      "month": "02",
+      "year": "1995"
+    },
+    "address": {
+      "street": "הרמבם",
+      "houseNumber": "16",
+      "entrance": "1",
+      "apartment": "12",
+      "city": "אבן יהודה",
+      "postalCode": "312422",
+      "poBox": ""
+    },
+    "landlinePhone": "",
+    "mobilePhone": "6502474947",
+    "jobType": "מלצרות",
+    "dateOfInjury": {
+      "day": "16",
+      "month": "04",
+      "year": "2022"
+    },
+    "timeOfInjury": "19:00",
+    "accidentLocation": "תאונה בדרך ללא רכב",
+    "accidentAddress": "הורדים 8, תל אביב",
+    "accidentDescription": "החלקתי בגלל שהרצפה הייתה רטובה ולא היה שום שלט שמזהיר.",
+    "injuredBodyPart": "יד שמאל",
+    "signature": "חתימהX",
+    "formFillingDate": {
+      "day": "25",
+      "month": "01",
+      "year": "2023"
+    },
+    "formReceiptDateAtClinic": {
+      "day": "02",
+      "month": "02",
+      "year": "1999"
+    },
+    "medicalInstitutionFields": {
+      "healthFundMember": "",
+      "natureOfAccident": "",
+      "medicalDiagnoses": ""
+    }
+  },
+  "has_been_corrected": false
+}

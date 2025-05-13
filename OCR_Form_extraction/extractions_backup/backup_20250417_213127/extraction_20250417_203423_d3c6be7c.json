@@ -1,0 +1,103 @@
+{
+  "id": "extraction_20250417_203423_d3c6be7c",
+  "timestamp": "2025-04-17T20:34:23.240379",
+  "original_extraction": {
+    "lastName": "",
+    "firstName": "",
+    "idNumber": "",
+    "gender": "",
+    "dateOfBirth": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "address": {
+      "street": "",
+      "houseNumber": "",
+      "entrance": "",
+      "apartment": "",
+      "city": "",
+      "postalCode": "",
+      "poBox": ""
+    },
+    "landlinePhone": "",
+    "mobilePhone": "",
+    "jobType": "",
+    "dateOfInjury": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "timeOfInjury": "",
+    "accidentLocation": "",
+    "accidentAddress": "",
+    "accidentDescription": "",
+    "injuredBodyPart": "",
+    "signature": "",
+    "formFillingDate": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "formReceiptDateAtClinic": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "medicalInstitutionFields": {
+      "healthFundMember": "",
+      "natureOfAccident": "",
+      "medicalDiagnoses": ""
+    }
+  },
+  "final_extraction": {
+    "lastName": "",
+    "firstName": "",
+    "idNumber": "",
+    "gender": "",
+    "dateOfBirth": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "address": {
+      "street": "",
+      "houseNumber": "",
+      "entrance": "",
+      "apartment": "",
+      "city": "",
+      "postalCode": "",
+      "poBox": ""
+    },
+    "landlinePhone": "",
+    "mobilePhone": "",
+    "jobType": "",
+    "dateOfInjury": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "timeOfInjury": "",
+    "accidentLocation": "",
+    "accidentAddress": "",
+    "accidentDescription": "",
+    "injuredBodyPart": "",
+    "signature": "",
+    "formFillingDate": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "formReceiptDateAtClinic": {
+      "day": "",
+      "month": "",
+      "year": ""
+    },
+    "medicalInstitutionFields": {
+      "healthFundMember": "",
+      "natureOfAccident": "",
+      "medicalDiagnoses": ""
+    }
+  },
+  "has_been_corrected": false
+}

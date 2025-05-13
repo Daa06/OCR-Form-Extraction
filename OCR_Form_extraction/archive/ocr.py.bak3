@@ -1,0 +1,115 @@
+import os
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.documentintelligence import DocumentIntelligenceClient
+from azure.ai.documentintelligence.models import AnalyzeResult
+from azure.ai.documentintelligence.models import AnalyzeDocumentRequest
+import sys
+import logging
+import base64
+from typing import Dict, Any, Optional
+
+# Ajouter le répertoire parent au PYTHONPATH
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT, AZURE_DOCUMENT_INTELLIGENCE_KEY
+
+# Configuration du logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class DocumentIntelligenceExtractor:
+    def __init__(self):
+        """Initialize the Document Intelligence client."""
+        endpoint = os.getenv("AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT")
+        key = os.getenv("AZURE_DOCUMENT_INTELLIGENCE_KEY")
+        
+        if not endpoint or not key:
+            raise ValueError("Azure Document Intelligence credentials not found in environment variables")
+            
+        self.client = DocumentIntelligenceClient(endpoint=endpoint, credential=AzureKeyCredential(key))
+
+    def extract_text(self, file_path: str) -> Dict[str, Any]:
+        """
+        Extract text, tables and layout from a document using Azure Document Intelligence.
+        
+        Args:
+            file_path: Path to the document file
+            
+        Returns:
+            Dict containing extracted text, tables, layout and confidence scores
+        """
+        try:
+            with open(file_path, "rb") as f:
+                document_bytes = f.read()
+                
+            poller = self.client.begin_analyze_document("prebuilt-document", document_bytes)
+            result = poller.result()
+
+            # Extraire le texte avec les scores de confiance
+            text_with_confidence = []
+            for page in result.pages:
+                for line in page.lines:
+                    text_with_confidence.append({
+                        "text": line.content,
+                        "confidence": line.confidence,
+                        "bounding_box": {
+                            "x": line.polygon[0].x,
+                            "y": line.polygon[0].y,
+                            "width": line.polygon[2].x - line.polygon[0].x,
+                            "height": line.polygon[2].y - line.polygon[0].y
+                        },
+                        "page": page.page_number
+                    })
+
+            # Extraire les tables
+            tables = []
+            for table in result.tables:
+                table_data = []
+                for cell in table.cells:
+                    table_data.append({
+                        "text": cell.content,
+                        "row_index": cell.row_index,
+                        "column_index": cell.column_index,
+                        "confidence": cell.confidence if hasattr(cell, 'confidence') else None
+                    })
+                tables.append(table_data)
+
+            # Extraire les informations de mise en page
+            layout = []
+            for page in result.pages:
+                page_layout = {
+                    "page_number": page.page_number,
+                    "width": page.width,
+                    "height": page.height,
+                    "unit": "points",
+                    "spans": []
+                }
+                
+                # Ajouter les spans avec leurs positions
+                for word in page.words:
+                    page_layout["spans"].append({
+                        "text": word.content,
+                        "confidence": word.confidence,
+                        "bounding_box": {
+                            "x": word.polygon[0].x,
+                            "y": word.polygon[0].y,
+                            "width": word.polygon[2].x - word.polygon[0].x,
+                            "height": word.polygon[2].y - word.polygon[0].y
+                        }
+                    })
+                    
+                layout.append(page_layout)
+
+            # Calculer la confiance moyenne
+            confidences = [span["confidence"] for page in layout for span in page["spans"] if span["confidence"] is not None]
+            average_confidence = sum(confidences) / len(confidences) if confidences else 0
+
+            return {
+                "text": text_with_confidence,
+                "tables": tables,
+                "layout": layout,
+                "average_confidence": average_confidence
+            }
+
+        except Exception as e:
+            logger.error(f"Error extracting text from document: {str(e)}")
+            raise 
